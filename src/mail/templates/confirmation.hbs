@@ -1,0 +1,81 @@
+{{#if sendUserWelcome}}
+  <div
+    style='font-family: Arial, sans-serif; color: #333; line-height: 1.6; padding: 20px; background-color: #f9f9f9; border: 1px solid #ddd; border-radius: 10px; max-width: 600px; margin: auto;'
+  >
+    <h2 style='color: #FF6600; text-align: center;'>Welcome to Lunozart,
+      {{name}}!</h2>
+
+    <p>We're thrilled to have you on board. Thank you for signing up!</p>
+
+    <p
+      style='background-color: #f4f4f4; padding: 15px; border-radius: 8px; font-size: 1.1em; color: #555;'
+    >
+      <strong>Your Login Details:</strong><br />
+      <strong>Email:</strong>
+      {{email}}<br />
+      <strong>Password:</strong>
+      {{password}}<br />
+    </p>
+
+    <p
+      style='margin-top: 20px; font-size: 1em; color: #777; text-align: center;'
+    >
+      <em>Best regards,</em><br />
+      <strong>The Lunozart Team</strong>
+    </p>
+  </div>
+{{/if}}
+
+{{#if sendVerificationMail}}
+
+  <p>Success,</p>
+  <br /><br />
+  <p>
+    Your Email has been Verified Successfully. Login into your dashboard
+    <br /><br />
+    Best Regards,
+    <br />
+
+    The Lunozart Team
+
+    <br /><br /><br />
+
+  </p>
+{{/if}}
+
+{{#if resetUrl}}
+  <div
+    style='font-family: Arial, sans-serif; color: #333; line-height: 1.6; padding: 20px; background-color: #f9f9f9; border: 1px solid #ddd; border-radius: 10px; max-width: 600px; margin: auto;'
+  >
+    <h2 style='color: #FF6600; text-align: center;'>Password Reset Request</h2>
+
+    <p>Hi there,</p>
+
+    <p>
+      You requested a password reset. Please click the button below to reset
+      your password:
+    </p>
+
+    <p style='text-align: center; margin: 20px 0;'>
+      <a
+        href='http://{{resetUrl}}'
+        style='background-color: #FF6600; color: white; text-decoration: none; padding: 10px 20px; border-radius: 5px; font-size: 16px; font-weight: bold;'
+      >
+        Reset Your Password
+      </a>
+    </p>
+
+    <p>
+      This link will expire in
+      <strong>one hour</strong>. If you didn’t request a password reset, you can
+      safely ignore this email.
+    </p>
+
+    <p
+      style='margin-top: 20px; font-size: 0.9em; color: #777; text-align: center;'
+    >
+      Thank you,<br />
+      <strong>The Lunozart Team</strong>
+    </p>
+  </div>
+{{/if}}
