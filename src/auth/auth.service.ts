@@ -68,7 +68,7 @@ export class AuthService {
     createUserDto.role = existingRole;
 
     // Hash password
-    await hash(createUserDto.password, 10);
+    createUserDto.password = await hash(createUserDto.password, 10);
 
     // const token = Math.floor(100000 + Math.random() * 900000).toString();
 
