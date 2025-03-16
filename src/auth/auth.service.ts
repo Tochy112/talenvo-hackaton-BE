@@ -19,7 +19,6 @@ import { MailService } from 'src/mail/mail.service';
 import { Role } from 'src/role/entities/role.entity';
 import { EmailValidationException } from 'utils';
 import { AccountService } from 'src/account/account.service';
-import { toSnakeCase } from 'utils/string.utils';
 
 @Injectable()
 export class AuthService {
@@ -68,15 +67,10 @@ export class AuthService {
 
     createUserDto.role = existingRole;
 
-    const unhashedPassword = toSnakeCase(`${existingRole.name}_Password`);
-
-    // createUserDto.role?.name == 'admin' ? 'Admin_Password' : 'Staff_Password';
-
     // Hash password
-    createUserDto.password = await hash(unhashedPassword, 10);
+    await hash(createUserDto.password, 10);
 
     // const token = Math.floor(100000 + Math.random() * 900000).toString();
-    // const token = '123456';
 
     // createUserDto.verificationToken = token;
 
@@ -85,10 +79,9 @@ export class AuthService {
     const newAcccount = await this.accountRepository.save(account);
 
     if (newAcccount) {
-      // Sending  email to user after signing up
+      // Sending  email to user after signing up      
       await this.mailService.sendAuthEmailConfirmation(
         createUserDto,
-        unhashedPassword,
         true,
       );
     }
@@ -100,7 +93,6 @@ export class AuthService {
       email: newAcccount.email,
       phoneNumber: newAcccount.phoneNumber,
       role: newAcccount.role,
-      status: newAcccount.status,
     };
   }
 
@@ -143,8 +135,6 @@ export class AuthService {
   }
 
   async resetPassword(resetPasswordDto: ResetPasswordDto) {
-    console.log('hello');
-
     const { token, newPassword } = resetPasswordDto;
     const account = await this.accountRepository.findOne({
       where: { resetToken: token, resetTokenExpiry: MoreThan(new Date()) },
@@ -170,13 +160,10 @@ export class AuthService {
       select: {
         id: true,
         email: true,
-        address: true,
         firstName: true,
         lastName: true,
         phoneNumber: true,
-        profileImage: true,
         password: true,
-        status: true,
       },
       relations: ['role'],
     });
@@ -187,11 +174,6 @@ export class AuthService {
 
     if (!account) {
       throw new ConflictException(`Account does not exist`);
-    }
-
-    // Check if the user's account is active
-    if (account.status !== 'active') {
-      throw new UnauthorizedException('User account is deactivated');
     }
 
     // Check if the user's email is verified
@@ -213,24 +195,7 @@ export class AuthService {
     return result;
   }
 
-  async validateGoogleUser(
-    email: string,
-    displayName: string,
-  ): Promise<Account> {
-    let account = await this.accountRepository.findOne({ where: { email } });
-
-    if (!account) {
-      account = this.accountRepository.create({
-        email,
-        firstName: displayName.split(' ')[0],
-        lastName: displayName.split(' ').slice(1).join(' '),
-      });
-      await this.accountRepository.save(account);
-    }
-
-    return account;
-  }
-
+  
   async generateJwtToken(user: Account) {
     const payload = { email: user.email, sub: user.id };
     return this.jwtService.signAsync(payload, {
@@ -238,6 +203,8 @@ export class AuthService {
       secret: process.env.jwtSecretKey,
     });
   }
+
+
 
   // async verifyEmailToken(
   //   verifyEmailDto: VerifyEmailDto,

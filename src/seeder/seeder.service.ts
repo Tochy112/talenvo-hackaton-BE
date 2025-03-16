@@ -12,8 +12,8 @@ export class SeederService {
 
   async seedRoles() {
     const roles = [
-      { name: 'admin', description: 'Administrator role' },
-      { name: 'staff', description: 'Staff role' },
+      { name: 'user', description: 'User role' },
+      { name: 'teacher', description: 'Teacher role' },
     ];
 
     for (const role of roles) {

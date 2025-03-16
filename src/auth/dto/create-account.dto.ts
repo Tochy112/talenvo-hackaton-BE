@@ -37,8 +37,11 @@ export class CreateAccountDto {
   @IsString()
   phoneNumber: string;
 
+  @ApiProperty({
+    description: 'The User password',
+    example: '',
+  })
   @IsString()
-  @IsOptional()
   password: string;
 
   @ApiProperty({

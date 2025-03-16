@@ -28,38 +28,6 @@ export class UpdateProfileDto {
   phoneNumber: string;
 
   @ApiProperty({
-    description: 'The user position',
-    example: '',
-  })
-  @IsOptional()
-  @IsString()
-  position?: string;
-
-  @ApiProperty({
-    description: 'The user description',
-    example: '',
-  })
-  @IsOptional()
-  @IsString()
-  description?: string;
-
-  @ApiProperty({
-    description: 'The user Gender',
-    example: 'male | female',
-  })
-  @IsOptional()
-  @IsString()
-  gender?: 'male' | 'female';
-
-  @ApiProperty({
-    description: 'The user address',
-    example: '',
-  })
-  @IsOptional()
-  @IsString()
-  address?: string;
-
-  @ApiProperty({
     description: 'The user address',
     example: '',
   })

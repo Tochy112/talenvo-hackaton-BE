@@ -31,27 +31,9 @@ export class Account {
   @Column({ nullable: false })
   phoneNumber: string;
 
-  @Column({ nullable: true })
-  profileImage: string;
-
-  @Column({ nullable: true })
-  address: string;
-
-  @Column({ nullable: true })
-  position: string;
-
-  @Column({ nullable: true })
-  description: string;
-
   @ManyToOne(() => Role)
   @JoinColumn()
   role!: Role;
-
-  @Column({ default: 'active' })
-  status: 'active' | 'inactive';
-
-  @Column({ nullable: true })
-  gender: 'male' | 'female';
 
   @Column({ nullable: true, select: false })
   resetToken: string;

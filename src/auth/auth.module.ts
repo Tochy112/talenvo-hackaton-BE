@@ -26,7 +26,6 @@ import { Role } from 'src/role/entities/role.entity';
     AuthService,
     AccountService,
     JwtStrategy,
-    // GoogleStrategy,
   ],
   exports: [AuthService],
 })

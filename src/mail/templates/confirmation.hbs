@@ -2,46 +2,37 @@
   <div
     style='font-family: Arial, sans-serif; color: #333; line-height: 1.6; padding: 20px; background-color: #f9f9f9; border: 1px solid #ddd; border-radius: 10px; max-width: 600px; margin: auto;'
   >
-    <h2 style='color: #FF6600; text-align: center;'>Welcome to Lunozart,
+    <h2 style='color: #FF6600; text-align: center;'>Welcome,
       {{name}}!</h2>
 
     <p>We're thrilled to have you on board. Thank you for signing up!</p>
 
     <p
-      style='background-color: #f4f4f4; padding: 15px; border-radius: 8px; font-size: 1.1em; color: #555;'
-    >
-      <strong>Your Login Details:</strong><br />
-      <strong>Email:</strong>
-      {{email}}<br />
-      <strong>Password:</strong>
-      {{password}}<br />
-    </p>
-
-    <p
       style='margin-top: 20px; font-size: 1em; color: #777; text-align: center;'
     >
       <em>Best regards,</em><br />
-      <strong>The Lunozart Team</strong>
+      <strong>Team</strong>
     </p>
   </div>
 {{/if}}
 
-{{#if sendVerificationMail}}
+{{!-- {{#if sendEmailVerificationMail}}
 
-  <p>Success,</p>
+  <p>Hi</p>
   <br /><br />
   <p>
-    Your Email has been Verified Successfully. Login into your dashboard
+    Verify your mail by clicking on the button below
     <br /><br />
-    Best Regards,
+    <button>{{ token }} </button>
     <br />
 
-    The Lunozart Team
+    Team
 
     <br /><br /><br />
 
   </p>
-{{/if}}
+{{/if}} --}}
+
 
 {{#if resetUrl}}
   <div
