@@ -19,6 +19,7 @@ import { MailService } from 'src/mail/mail.service';
 import { Role } from 'src/role/entities/role.entity';
 import { EmailValidationException } from 'utils';
 import { AccountService } from 'src/account/account.service';
+import { ExecutionContext } from '@nestjs/common';
 
 @Injectable()
 export class AuthService {
@@ -79,11 +80,8 @@ export class AuthService {
     const newAcccount = await this.accountRepository.save(account);
 
     if (newAcccount) {
-      // Sending  email to user after signing up      
-      await this.mailService.sendAuthEmailConfirmation(
-        createUserDto,
-        true,
-      );
+      // Sending  email to user after signing up
+      await this.mailService.sendAuthEmailConfirmation(createUserDto, true);
     }
 
     return {
@@ -195,7 +193,6 @@ export class AuthService {
     return result;
   }
 
-  
   async generateJwtToken(user: Account) {
     const payload = { email: user.email, sub: user.id };
     return this.jwtService.signAsync(payload, {
@@ -204,7 +201,14 @@ export class AuthService {
     });
   }
 
-
+  async getUserFromRequest(): Promise<Account> {
+    let data
+    (ctx: ExecutionContext) => {
+      const request = ctx.switchToHttp().getRequest();
+      data = request.user;
+    };
+    return data
+  }
 
   // async verifyEmailToken(
   //   verifyEmailDto: VerifyEmailDto,

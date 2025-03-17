@@ -31,6 +31,12 @@ export class Account {
   @Column({ nullable: false })
   phoneNumber: string;
 
+  @Column({ default: 0 })
+  xp: number;
+
+  @Column({ nullable: true })
+  rank: string;
+
   @ManyToOne(() => Role)
   @JoinColumn()
   role!: Role;

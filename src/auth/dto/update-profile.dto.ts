@@ -26,12 +26,4 @@ export class UpdateProfileDto {
   @IsOptional()
   @IsString()
   phoneNumber: string;
-
-  @ApiProperty({
-    description: 'The user address',
-    example: '',
-  })
-  @IsOptional()
-  @IsString()
-  roleName?: string;
 }

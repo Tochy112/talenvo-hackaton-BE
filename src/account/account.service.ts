@@ -29,39 +29,40 @@ export class AccountService {
     private readonly cloudinaryUploadService: CloudinaryUploadService,
   ) {}
 
-  async findAll({
-    page,
-    limit,
-    search,
-    role,
-  }: {
-    page?: number | 1;
-    limit?: number | 10;
-    search?: string;
-    role?: string;
-  }) {
-    const query = this.accountRepository
-      .createQueryBuilder('account')
-      .leftJoinAndSelect('account.role', 'role')
-      .orderBy('account.createdAt', 'DESC');
+  // async findAll({
+  //   page,
+  //   limit,
+  //   search,
+  //   role,
+  // }: {
+  //   page?: number | 1;
+  //   limit?: number | 10;
+  //   search?: string;
+  //   role?: string;
+  // }) {
+  //   const query = this.accountRepository
+  //     .createQueryBuilder('account')
+  //     .leftJoinAndSelect('account.role', 'role')
+  //     .orderBy('account.createdAt', 'DESC');
 
-    if (search) {
-      query.andWhere(
-        '(account.firstName LIKE :search OR account.lastName LIKE :search OR account.email LIKE :search)',
-        { search: `%${search}%` },
-      );
-    }
+  //   if (search) {
+  //     query.andWhere(
+  //       '(account.firstName LIKE :search OR account.lastName LIKE :search OR account.email LIKE :search)',
+  //       { search: `%${search}%` },
+  //     );
+  //   }
 
-    if (role) {
-      query.andWhere('role.name = :role', { role });
-    }
+  //   if (role) {
+  //     query.andWhere('role.name = :role', { role });
+  //   }
 
-    const [data] = await query.getManyAndCount();
+  //   const [data] = await query.getManyAndCount();
 
-    return {
-      ...paginate(data, limit, page),
-    };
-  }
+  //   return {
+  //     ...paginate(data, limit, page),
+  //   };
+  // }
+  
 
   async findOneById(id: string): Promise<Account> {
     const user = await this.accountRepository.findOne({
@@ -81,11 +82,10 @@ export class AccountService {
   }
 
   async updatePassword(updatePasswordDTO: UpdatePasswordDto) {
-    const { currentPassword, newPassword, email } = updatePasswordDTO;
+    const { currentPassword, newPassword } = updatePasswordDTO;
 
     const user = await this.accountRepository
       .createQueryBuilder('user')
-      .where('user.email = :email', { email })
       .addSelect('user.password')
       .getOne();
 
@@ -127,16 +127,6 @@ export class AccountService {
       throw new NotFoundException('User not found');
     }
 
-    if (updateProfileDto.roleName) {
-      const role = await this.roleRepository.findOne({
-        where: { name: updateProfileDto.roleName },
-      });
-      if (!role) {
-        throw new NotFoundException('Role not found');
-      }
-      user.role = role;
-    }
-
     Object.assign(user, updateProfileDto);
 
     const updatedUser = await this.accountRepository.save(user);
@@ -151,7 +141,6 @@ export class AccountService {
   async deleteAccount(id: string) {
     const user = await this.accountRepository.findOne({
       where: { id },
-      relations: ['attendance'],
     });
     if (!user) {
       throw new ConflictException(`User with id ${id} does not exist`);

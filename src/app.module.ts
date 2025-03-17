@@ -7,6 +7,8 @@ import { APP_FILTER, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { ErrorInterceptor } from './interceptors/error.interceptor';
 import { ErrorFilter } from './filters/error.filters';
 import { SeederModule } from './seeder/seeder.module';
+import { CourseModule } from './course/course.module';
+import { QuizModule } from './quiz/quiz.module';
 
 @Module({
   imports: [
@@ -35,6 +37,8 @@ import { SeederModule } from './seeder/seeder.module';
     AuthModule,
     AccountModule,
     SeederModule,
+    CourseModule,
+    QuizModule,
   ],
 
   providers: [
