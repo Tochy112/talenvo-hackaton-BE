@@ -1,3 +1,4 @@
+import { QuizAttempt } from 'src/quiz-attempt/entities/quizAttempt.entity';
 import { Role } from 'src/role/entities/role.entity';
 import {
   Entity,
@@ -40,6 +41,9 @@ export class Account {
   @ManyToOne(() => Role)
   @JoinColumn()
   role!: Role;
+
+  @OneToMany(() => QuizAttempt, quizAttempt => quizAttempt.user)
+  quizAttempts: QuizAttempt[];
 
   @Column({ nullable: true, select: false })
   resetToken: string;

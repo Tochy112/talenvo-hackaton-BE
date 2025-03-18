@@ -9,6 +9,7 @@ import { ErrorFilter } from './filters/error.filters';
 import { SeederModule } from './seeder/seeder.module';
 import { CourseModule } from './course/course.module';
 import { QuizModule } from './quiz/quiz.module';
+import { RankModule } from './rank/rank.module';
 
 @Module({
   imports: [
@@ -36,9 +37,10 @@ import { QuizModule } from './quiz/quiz.module';
     }),
     AuthModule,
     AccountModule,
-    SeederModule,
     CourseModule,
     QuizModule,
+    RankModule,
+    SeederModule,
   ],
 
   providers: [

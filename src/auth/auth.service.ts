@@ -33,7 +33,7 @@ export class AuthService {
     private mailService: MailService,
   ) {}
 
-  async create(createUserDto: CreateAccountDto) {
+  async create(createUserDto: CreateAccountDto){
     // Validate email
     if (!validateEmail(createUserDto.email)) {
       throw new EmailValidationException();
@@ -90,6 +90,8 @@ export class AuthService {
       lastName: newAcccount.lastName,
       email: newAcccount.email,
       phoneNumber: newAcccount.phoneNumber,
+      xp: newAcccount.xp,
+      rank: newAcccount.rank,
       role: newAcccount.role,
     };
   }
@@ -199,15 +201,6 @@ export class AuthService {
       expiresIn: '1h',
       secret: process.env.jwtSecretKey,
     });
-  }
-
-  async getUserFromRequest(): Promise<Account> {
-    let data
-    (ctx: ExecutionContext) => {
-      const request = ctx.switchToHttp().getRequest();
-      data = request.user;
-    };
-    return data
   }
 
   // async verifyEmailToken(

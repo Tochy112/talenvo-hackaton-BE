@@ -69,13 +69,11 @@ export class AuthController {
   @UseGuards(JwtGuard)
   @ApiBearerAuth('JWT')
   @ApiOperation({ summary: 'Get Currently logged in User' })
-  // async getMe(@GetUser() user: any) {
-  //   const { deletedAt, ...userWithoutDeletedAt } = user;
-  //   return { data: userWithoutDeletedAt, status: 'success' };
-  // }
-  async getMe(){
-    return await this.authService.getUserFromRequest()
+  async getMe(@GetUser() user: any) {
+    const { deletedAt, ...userWithoutDeletedAt } = user;
+    return { data: userWithoutDeletedAt, status: 'success' };
   }
+ 
 
   @Patch('reset-password')
   @ApiQuery({

@@ -16,18 +16,27 @@ import { ApiBearerAuth, ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { JwtGuard } from 'src/auth/guard/jwt.guard';
 import { RolesGuard } from 'src/auth/guard/role.guard';
 import { Roles } from 'src/auth/customDecorators/roleHandling';
-
-@Controller('courses')
+import { GlobalApiResponse } from 'utils/decorator/api-response.decorator';
+@GlobalApiResponse()
+@Controller({
+  path: 'course',
+  version: '1',
+})
 export class CourseController {
   constructor(private readonly courseService: CourseService) {}
 
-  @Post('')
+  @Post(':teacherId')
   @UseGuards(JwtGuard, RolesGuard)
   @ApiBearerAuth('JWT')
   @Roles('teacher')
   @ApiOperation({ summary: 'create a course' })
-  createCourse(@Body() createCourseDto: CreateCourseDto) {
-    const data = this.courseService.create(createCourseDto);
+  async createCourse(
+    @Body() createCourseDto: CreateCourseDto,
+    @Param('teacherId') teacherId: string,
+  ) {
+    console.log("hello world1");
+    
+    const data = await this.courseService.create(createCourseDto, teacherId);
     return {
       data,
       status: 'success',
@@ -35,7 +44,7 @@ export class CourseController {
   }
 
   @Get('')
-  @UseGuards(JwtGuard, RolesGuard)
+  @UseGuards(JwtGuard)
   @ApiBearerAuth('JWT')
   @ApiOperation({ summary: 'Get all courses' })
   @ApiQuery({
@@ -81,7 +90,7 @@ export class CourseController {
   }
 
   @Get(':id')
-  @UseGuards(JwtGuard, RolesGuard)
+  @UseGuards(JwtGuard)
   @ApiBearerAuth('JWT')
   @ApiOperation({ summary: 'Get single course by id' })
   async findOneById(@Param('id') id: string, @Query() queryParams) {
@@ -93,7 +102,7 @@ export class CourseController {
   }
 
   @Patch(':id')
-  @UseGuards(JwtGuard)
+  @UseGuards(JwtGuard, RolesGuard)
   @ApiBearerAuth('JWT')
   @Roles('teacher')
   @ApiOperation({ summary: 'Update course data' })

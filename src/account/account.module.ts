@@ -7,10 +7,11 @@ import { Account } from './entities/account.entity';
 import { MailModule } from '../mail/mail.module';
 import { Role } from 'src/role/entities/role.entity';
 import { CloudinaryModule } from 'src/cloudinary/cloudinaryUpload.module';
+import { Rank } from 'src/rank/entities/rank.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Account, Role]),
+    TypeOrmModule.forFeature([Account, Role, Rank]),
     MailModule,
     CloudinaryModule,
   ],

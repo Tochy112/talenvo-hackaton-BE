@@ -10,18 +10,37 @@ import { Repository } from 'typeorm';
 import { paginate } from 'utils/pagination.utils';
 import { Course } from './entities/course.entity';
 import { AuthService } from 'src/auth/auth.service';
+import { AccountService } from 'src/account/account.service';
+import { Account } from 'src/account/entities/account.entity';
+import { QuizAttempt } from 'src/quiz-attempt/entities/quizAttempt.entity';
+import { Question } from 'src/question/entities/question.entity';
+import { Quiz } from 'src/quiz/entities/quiz.entity';
 
 @Injectable()
 export class CourseService {
   constructor(
     @InjectRepository(Course)
     private readonly courseRepository: Repository<Course>,
+    @InjectRepository(QuizAttempt)
+    private readonly quizAttemptRepository: Repository<QuizAttempt>,
+    @InjectRepository(Question)
+    private readonly questionRepository: Repository<Question>,
+    @InjectRepository(Quiz)
+    private readonly quizRepository: Repository<Quiz>,
+    @InjectRepository(Account)
+    private readonly accountRepository: Repository<Account>,
     private authService: AuthService,
   ) {}
 
-  async create(createCourseDto: CreateCourseDto) {
+  async create(createCourseDto: CreateCourseDto, teacherId: string) {    
+    console.log("hello world");
+    
+    const account = await this.accountRepository.findOne({
+      where: {id: teacherId}
+    })
+
     if (!createCourseDto.title) {
-      throw new BadRequestException('Provide name');
+      throw new BadRequestException('Provide title');
     }
     const course = await this.courseRepository.findOne({
       where: { title: createCourseDto.title },
@@ -33,9 +52,11 @@ export class CourseService {
       );
     }
 
-    createCourseDto.account = await this.authService.getUserFromRequest();
-
-    const newCourse = this.courseRepository.create(createCourseDto);
+    const newCourse = this.courseRepository.create({
+      ...createCourseDto, 
+      account
+    }
+    );
     const newCourseData = await this.courseRepository.save(newCourse);
     return newCourseData;
   }
@@ -68,6 +89,7 @@ export class CourseService {
   async findOne(id: string) {
     const course = await this.courseRepository.findOne({
       where: { id },
+      relations: ["quizzes", "quizzes.questions"]
     });
     if (!course) {
       throw new BadRequestException('Course not found');
@@ -90,16 +112,34 @@ export class CourseService {
   }
 
   async remove(id: string) {
-    const role = await this.courseRepository.findOne({
-      where: { id },
+    const course = await this.courseRepository.findOne({
+        where: { id },
+        relations: ['quizzes', 'quizzes.questions', 'quizzes.attempts'],
     });
-    if (!role) {
-      throw new BadRequestException('Role not found');
+
+    if (!course) {
+        throw new BadRequestException('Course not found');
     }
 
+    // Delete related quiz attempts
+    for (const quiz of course.quizzes) {
+        await this.quizAttemptRepository.delete({ quiz: { id: quiz.id } });
+    }
+
+    // Delete related questions
+    for (const quiz of course.quizzes) {
+        await this.questionRepository.delete({ quiz: { id: quiz.id } });
+    }
+
+    // Delete related quizzes
+    await this.quizRepository.delete({ course: { id } });
+
+    // Delete the course
     await this.courseRepository.softDelete(id);
+
     return { message: 'Course deleted successfully' };
-  }
+}
+
 
   async restore(id: string) {
     const role = await this.courseRepository.findOne({

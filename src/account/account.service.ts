@@ -8,7 +8,7 @@ import { v2 as cloudinary } from 'cloudinary';
 import { compare, hash } from 'bcrypt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Account } from './entities/account.entity';
-import { Like, Repository } from 'typeorm';
+import { LessThanOrEqual, Like, MoreThanOrEqual, Repository } from 'typeorm';
 import { UpdateProfileDto } from '../auth/dto/update-profile.dto';
 import { UpdatePasswordDto } from '../auth/dto/update-password.dto';
 import { Role } from 'src/role/entities/role.entity';
@@ -18,6 +18,7 @@ import { UpdateAccountRoleDTO } from './dto/update-account-role.dto';
 import { Readable } from 'stream';
 import { paginate } from 'utils/pagination.utils';
 import { CloudinaryUploadService } from 'src/cloudinary/cloudinaryUpload.service';
+import { Rank } from 'src/rank/entities/rank.entity';
 
 @Injectable()
 export class AccountService {
@@ -26,6 +27,8 @@ export class AccountService {
     private readonly accountRepository: Repository<Account>,
     @InjectRepository(Role)
     private readonly roleRepository: Repository<Role>,
+    @InjectRepository(Rank)
+    private readonly rankRepository: Repository<Rank>,
     private readonly cloudinaryUploadService: CloudinaryUploadService,
   ) {}
 
@@ -130,12 +133,30 @@ export class AccountService {
     Object.assign(user, updateProfileDto);
 
     const updatedUser = await this.accountRepository.save(user);
-    const { password, deletedAt, ...data } = updatedUser;
+    const { password, deletedAt, resetToken, resetTokenExpiry, ...data } = updatedUser;
 
     return {
       data,
       status: 'success',
     };
+  }
+
+  async updateXp(userId: string, xpToAdd: number): Promise<Account> {
+    const user = await this.accountRepository.findOne({
+      where: {id: userId}
+    });
+    user.xp += xpToAdd;
+    
+    // Update rank based on new XP
+    const newRank = await this.rankRepository.findOne({
+      where: { minXp: LessThanOrEqual(user.xp), maxXp: MoreThanOrEqual(user.xp) },
+    });
+    
+    if (newRank) {
+      user.rank = newRank.name;
+    }
+    
+    return this.accountRepository.save(user);
   }
 
   async deleteAccount(id: string) {

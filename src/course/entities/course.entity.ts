@@ -1,4 +1,6 @@
 import { Account } from 'src/account/entities/account.entity';
+import { Question } from 'src/question/entities/question.entity';
+import { Quiz } from 'src/quiz/entities/quiz.entity';
 import {
   Entity,
   Column,
@@ -31,8 +33,8 @@ export class Course {
   @Column('text', { nullable: false })
   outline: string;
 
-  @Column({ nullable: false, type: "simple-array"})
-  content: string[];
+  @Column({ nullable: false, type: "json"})
+  content: object[];
 
   @Column({ nullable: false })
   difficultyLevel: string;
@@ -60,9 +62,6 @@ export class Course {
   })
   deletedAt: Date;
 
-//   @OneToMany(() => Quiz, (quiz) => quiz.course)
-//   quizzes: Quiz[];
-
-//   @OneToMany(() => CourseProgress, (progress) => progress.course)
-//   courseProgress: CourseProgress[];
+  @OneToMany(() => Quiz, (quiz) => quiz.course, {cascade: ['remove'] })
+  quizzes: Quiz[];
 }

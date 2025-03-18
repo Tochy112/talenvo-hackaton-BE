@@ -9,11 +9,12 @@ import { Account } from '../account/entities/account.entity';
 import { JwtStrategy } from './strategy/jwt.strategy';
 import { CloudinaryModule } from 'src/cloudinary/cloudinaryUpload.module';
 import { Role } from 'src/role/entities/role.entity';
+import { Rank } from 'src/rank/entities/rank.entity';
 // import { GoogleStrategy } from './strategy/google.strategy';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Account, Role]),
+    TypeOrmModule.forFeature([Account, Role, Rank]),
     AccountModule,
     CloudinaryModule,
     JwtModule.register({

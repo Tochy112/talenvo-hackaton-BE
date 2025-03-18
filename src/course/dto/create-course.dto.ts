@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsOptional, IsString, } from 'class-validator';
+import { IsArray, IsOptional, IsString, } from 'class-validator';
 import { Account } from 'src/account/entities/account.entity';
 
 export class CreateCourseDto {
@@ -18,6 +18,13 @@ export class CreateCourseDto {
   description: string;
 
   @ApiProperty({
+    description: 'Course category',
+    example: '',
+  })
+  @IsString()
+  category: string;
+
+  @ApiProperty({
     description: 'Course Subject',
     example: '',
   })
@@ -33,10 +40,12 @@ export class CreateCourseDto {
 
   @ApiProperty({
     description: 'Course content',
-    example: '',
+    example: [
+      {"page1": ""}
+    ],
   })
-  @IsString()
-  content: string[];
+  @IsArray()
+  content: object[];
 
   @ApiProperty({
     description: 'Course difficultyLevel',
@@ -53,10 +62,9 @@ export class CreateCourseDto {
   class: string;
 
   @ApiProperty({
-    description: 'User account',
+    description: 'Course class',
     example: '',
   })
   @IsString()
-  account: Account;
- 
+  quizzes: string;
 }

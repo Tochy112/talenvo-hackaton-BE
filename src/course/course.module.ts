@@ -10,11 +10,24 @@ import { Role } from 'src/role/entities/role.entity';
 import { AccountService } from 'src/account/account.service';
 import { JwtService } from '@nestjs/jwt';
 import { CloudinaryModule } from 'src/cloudinary/cloudinaryUpload.module';
+import { Rank } from 'src/rank/entities/rank.entity';
+import { QuizAttempt } from 'src/quiz-attempt/entities/quizAttempt.entity';
+import { Quiz } from 'src/quiz/entities/quiz.entity';
+import { Question } from 'src/question/entities/question.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Course, Account, Role]),
-  CloudinaryModule
-],
+  imports: [
+    TypeOrmModule.forFeature([
+      Course,
+      Account,
+      Role,
+      Rank,
+      QuizAttempt,
+      Quiz,
+      Question,
+    ]),
+    CloudinaryModule,
+  ],
   controllers: [CourseController, AccountController],
   providers: [CourseService, AuthService, AccountService, JwtService],
   exports: [CourseService],

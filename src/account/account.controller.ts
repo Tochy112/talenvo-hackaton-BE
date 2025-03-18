@@ -33,7 +33,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { GlobalApiResponse } from '../../utils/decorator/api-response.decorator';
 
 @GlobalApiResponse()
-@Controller({ path: 'accounts', version: '1' })
+@Controller({ path: 'account', version: '1' })
 export class AccountController {
   constructor(private readonly accountService: AccountService) {}
 
@@ -86,7 +86,7 @@ export class AccountController {
 
 
   @Get(':id')
-  @UseGuards(JwtGuard, RolesGuard)
+  @UseGuards(JwtGuard)
   @ApiBearerAuth('JWT')
   @ApiOperation({ summary: 'Get single account by id' })
   async findOneById(@Param('id') id: string, @Query() queryParams) {
