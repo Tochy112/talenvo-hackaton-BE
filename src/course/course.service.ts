@@ -32,9 +32,7 @@ export class CourseService {
     private authService: AuthService,
   ) {}
 
-  async create(createCourseDto: CreateCourseDto, teacherId: string) {    
-    console.log("hello world");
-    
+  async create(createCourseDto: CreateCourseDto, teacherId: string) {        
     const account = await this.accountRepository.findOne({
       where: {id: teacherId}
     })
@@ -54,11 +52,36 @@ export class CourseService {
 
     const newCourse = this.courseRepository.create({
       ...createCourseDto, 
-      account
+      account,
     }
     );
     const newCourseData = await this.courseRepository.save(newCourse);
-    return newCourseData;
+
+    
+    // If quizzes exist in the DTO, create them
+    if (createCourseDto.quizzes && createCourseDto.quizzes.length > 0) {
+      for (const quizDto of createCourseDto.quizzes) {
+          const quiz = this.quizRepository.create({
+              ...quizDto,
+              course: newCourseData, // Associate quiz with the course
+          });
+
+          const savedQuiz = await this.quizRepository.save(quiz);
+
+          // If questions exist, create them
+          if (quizDto.questions && quizDto.questions.length > 0) {
+              const questions = quizDto.questions.map(questionDto =>
+                  this.questionRepository.create({
+                      ...questionDto,
+                      quiz: savedQuiz, // Associate question with the quiz
+                  })
+              );
+
+              await this.questionRepository.save(questions);
+            }
+      }
+  }
+  return newCourseData;
   }
 
   async findAll({

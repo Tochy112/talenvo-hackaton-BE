@@ -27,8 +27,6 @@ export class QuizService {
     courseId: string,
     createQuizDto: CreateQuizDto,
   ): Promise<Quiz> {    
-
-    console.log("courseId:", courseId);
     
     const existingQuiz = await this.quizRepository.findOne({
       where: { course: { id: courseId } },
