@@ -26,5 +26,3 @@ For detailed API endpoints and usage, refer to our Postman documentation:
 ## **Tech Stack**   
 🔧 **Backend**: NodeJs 
 📊 **Database**: MySQL  
-
-**Live API Documentation Url  **
