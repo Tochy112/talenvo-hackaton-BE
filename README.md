@@ -17,6 +17,14 @@ LearnlyNG is an **interactive edutech platform** designed to make learning more 
 ✅ **Gamification & XP Rewards** – Earn points and ranks for successful course completions and high quiz scores.  
 ✅ **User Roles** – Separate dashboards for **students** and **teachers** to personalize the experience.  
 
+## API Documentation
+
+For detailed API endpoints and usage, refer to our Postman documentation:
+
+[![Postman Documentation](https://img.shields.io/badge/View%20API%20Docs-orange?style=for-the-badge&logo=postman)](https://documenter.getpostman.com/view/32001311/2sAYkBtggf)
+
 ## **Tech Stack**   
 🔧 **Backend**: NodeJs 
-📊 **Database**: MySQL   
+📊 **Database**: MySQL  
+
+**Live API Documentation Url  **
