@@ -19,6 +19,8 @@ export class QuizService {
     private accountRepository: Repository<Account>,
     @InjectRepository(QuizAttempt)
     private attemptRepository: Repository<QuizAttempt>,
+    @InjectRepository(Question)
+    private questionRepository: Repository<Question>,
     private userService: AccountService,
   ) {}
 
@@ -26,26 +28,38 @@ export class QuizService {
   async createQuiz(
     courseId: string,
     createQuizDto: CreateQuizDto,
-  ): Promise<Quiz> {    
-    
+  ): Promise<Quiz> {
     const existingQuiz = await this.quizRepository.findOne({
       where: { course: { id: courseId } },
-    });    
-
+    });
+  
     if (existingQuiz) {
       throw new BadRequestException('Quiz already exists');
     }
-
-    // Then create the quiz
+  
+    // Create the quiz
     const quiz = this.quizRepository.create({
       ...createQuizDto,
       course: { id: courseId },
     });
-
+  
     const savedQuiz = await this.quizRepository.save(quiz);
-
+  
+    // If the quiz has questions, save separately
+    if (createQuizDto.questions && createQuizDto.questions.length > 0) {
+      const questions = createQuizDto.questions.map((questionDto) =>
+        this.questionRepository.create({
+          ...questionDto,
+          quiz: savedQuiz, // Associate question with the saved quiz
+        })
+      );
+  
+      await this.questionRepository.save(questions);
+    }
+  
     return savedQuiz;
   }
+  
 
   // update quiz
   async updateQuiz(quizId: string, updateQuizDto: UpdateQuizDto): Promise<Quiz> {
